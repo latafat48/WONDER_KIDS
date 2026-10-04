@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Animal Coloring Book</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f5ff;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.container {
+    width: min(95%, 1200px);
+    margin: auto;
+    padding: 15px 0 40px;
+}
+
+h1 {
+    text-align: center;
+    color: #5d4e8c;
+    font-size: clamp(22px, 4vw, 34px);
+    margin: 10px 0 18px;
+}
+
+
+/* =========================
+   ANIMALS
+========================= */
+
+.animals {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.animal-btn {
+    border: none;
+    background: white;
+    padding: 9px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    transition: .15s;
+}
+
+.animal-btn:hover {
+    transform: scale(1.04);
+}
+
+.animal-btn.active {
+    background: #d9c9ff;
+}
+
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar {
+    background: white;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    margin-bottom: 15px;
+}
+
+.tool-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.tool-btn {
+    border: none;
+    background: #eee9ff;
+    padding: 9px 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    min-height: 38px;
+}
+
+.tool-btn:hover {
+    background: #ddd2ff;
+}
+
+.tool-btn.active {
+    background: #bda8ff;
+    color: white;
+}
+
+
+/* =========================
+   COLORS
+========================= */
+
+.colors {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    padding: 5px;
+}
+
+.color {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    transition: .12s;
+}
+
+.color:hover {
+    transform: scale(1.12);
+}
+
+.color.selected {
+    outline: 3px solid #555;
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   CUSTOM COLOR
+========================= */
+
+.custom-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+#customColor {
+    width: 55px;
+    height: 38px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+}
+
+
+/* =========================
+   BRUSH SIZE
+========================= */
+
+.size-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.size-control button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: #eee9ff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+#brushSize {
+    width: min(250px, 50vw);
+}
+
+#sizeValue {
+    min-width: 48px;
+    text-align: center;
+}
+
+
+/* =========================
+   ZOOM
+========================= */
+
+.zoom-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.zoom-btn,
+.zoom-value {
+    border: none;
+    height: 36px;
+    border-radius: 9px;
+    background: #eee9ff;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.zoom-btn {
+    width: 40px;
+}
+
+.zoom-value {
+    min-width: 65px;
+    padding: 0 10px;
+}
+
+.zoom-btn:hover,
+.zoom-value:hover {
+    background: #ddd2ff;
+}
+
+
+/* =========================
+   CANVAS
+========================= */
+
+.canvas-scroll {
+    width: 100%;
+    overflow: auto;
+    padding: 10px;
+    -webkit-overflow-scrolling: touch;
+
+    /*
+       Canvas mümkün olduqda
+       həmişə mərkəzdə qalır.
+    */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    scroll-behavior: smooth;
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: min(100%, 794px);
+    aspect-ratio: 210 / 297;
+    background: white;
+    box-shadow: 0 5px 20px rgba(0,0,0,.15);
+    overflow: hidden;
+    flex-shrink: 0;
+
+    /*
+       Mərkəzləmə üçün.
+    */
+    margin: 0 auto;
+}
+
+.canvas-wrapper canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    touch-action: none;
+}
+
+
+/*
+   3 LAYER
+
+   1. Animal image
+   2. User coloring
+   3. Black outline
+*/
+
+#baseCanvas {
+    z-index: 1;
+}
+
+#paintCanvas {
+    z-index: 2;
+}
+
+#lineCanvas {
+    z-index: 3;
+    pointer-events: none;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.action-btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #d9c9ff;
+    min-height: 40px;
+    font-size: 14px;
+}
+
+.action-btn:hover {
+    background: #c6b1ff;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .container {
+        width: 96%;
+    }
+
+    /*
+       Artıq soldan başlamır.
+       Mərkəzdə qalır.
+    */
+    .canvas-scroll {
+        justify-content: center;
+    }
+
+    .animal-btn {
+        font-size: 13px;
+        padding: 8px 11px;
+    }
+
+    .tool-btn {
+        font-size: 13px;
+        padding: 8px 11px;
+    }
+}
+
+
+/* =========================
+   PHONE
+========================= */
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 100%;
+        padding: 10px 8px 30px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .animals {
+        gap: 6px;
+    }
+
+    .animal-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .toolbar {
+        padding: 9px;
+    }
+
+    .tool-row {
+        gap: 6px;
+    }
+
+    .tool-btn {
+        flex: 1 1 auto;
+        min-width: 75px;
+        font-size: 12px;
+    }
+
+    .color {
+        width: 27px;
+        height: 27px;
+        min-width: 27px;
+    }
+
+    .canvas-scroll {
+        justify-content: center;
+        padding: 8px 0 15px;
+    }
+
+    .canvas-wrapper {
+        width: 100%;
+        min-width: 280px;
+    }
+
+    .action-btn {
+        flex: 1 1 120px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    h1 {
+        font-size: 21px;
+    }
+
+    .animal-btn {
+        padding: 7px 8px;
+        font-size: 11px;
+    }
+
+    .tool-btn {
+        min-width: 65px;
+        font-size: 11px;
+    }
+
+    .color {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>🎨 My Animal Coloring Book</h1>
+
+
+<!-- =========================
+     ANIMALS
+========================= -->
+
+<div class="animals">
+
+<button class="animal-btn active"
+        onclick="changeAnimal('DOG.png',this)">
+🐶 Dog
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('CAT.png',this)">
+🐱 Cat
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('RABBIT.png',this)">
+🐰 Rabbit
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('CHICKEN.png',this)">
+🐔 Chicken
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('DUCK.png',this)">
+🦆 Duck
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('TURTLE.png',this)">
+🐢 Turtle
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('SHEEP.png',this)">
+🐑 Sheep
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('GOAT.png',this)">
+🐐 Goat
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('COW.png',this)">
+🐮 Cow
+</button>
+
+<button class="animal-btn"
+        onclick="changeAnimal('HORSE.png',this)">
+🐴 Horse
+</button>
+
+</div>
+
+
+<!-- =========================
+     TOOLS
+========================= -->
+
+<div class="toolbar">
+
+<div class="tool-row">
+
+<button class="tool-btn active"
+        onclick="setTool('brush')">
+🖌 Brush
+</button>
+
+<button class="tool-btn"
+        onclick="setTool('pencil')">
+✏️ Pencil
+</button>
+
+<button class="tool-btn"
+        onclick="setTool('fill')">
+🪣 Fill
+</button>
+
+<button class="tool-btn"
+        onclick="setTool('eraser')">
+🧽 Eraser
+</button>
+
+<button class="tool-btn"
+        onclick="undo()">
+↩ Undo
+</button>
+
+<button class="tool-btn"
+        onclick="redo()">
+↪ Redo
+</button>
+
+</div>
+
+
+<!-- =========================
+     COLORS
+========================= -->
+
+<div class="colors">
+
+<div class="color selected"
+     style="background:#ff595e"
+     onclick="setColor('#ff595e',this)">
+</div>
+
+<div class="color"
+     style="background:#ff924c"
+     onclick="setColor('#ff924c',this)">
+</div>
+
+<div class="color"
+     style="background:#ffca3a"
+     onclick="setColor('#ffca3a',this)">
+</div>
+
+<div class="color"
+     style="background:#8ac926"
+     onclick="setColor('#8ac926',this)">
+</div>
+
+<div class="color"
+     style="background:#52b788"
+     onclick="setColor('#52b788',this)">
+</div>
+
+<div class="color"
+     style="background:#1982c4"
+     onclick="setColor('#1982c4',this)">
+</div>
+
+<div class="color"
+     style="background:#4267ac"
+     onclick="setColor('#4267ac',this)">
+</div>
+
+<div class="color"
+     style="background:#6a4c93"
+     onclick="setColor('#6a4c93',this)">
+</div>
+
+<div class="color"
+     style="background:#f72585"
+     onclick="setColor('#f72585',this)">
+</div>
+
+<div class="color"
+     style="background:#ff99c8"
+     onclick="setColor('#ff99c8',this)">
+</div>
+
+<div class="color"
+     style="background:#9b5de5"
+     onclick="setColor('#9b5de5',this)">
+</div>
+
+<div class="color"
+     style="background:#00bbf9"
+     onclick="setColor('#00bbf9',this)">
+</div>
+
+<div class="color"
+     style="background:#00f5d4"
+     onclick="setColor('#00f5d4',this)">
+</div>
+
+<div class="color"
+     style="background:#8d99ae"
+     onclick="setColor('#8d99ae',this)">
+</div>
+
+<div class="color"
+     style="background:#795548"
+     onclick="setColor('#795548',this)">
+</div>
+
+<div class="color"
+     style="background:#000000"
+     onclick="setColor('#000000',this)">
+</div>
+
+<div class="color"
+     style="background:#ffffff"
+     onclick="setColor('#ffffff',this)">
+</div>
+
+</div>
+
+
+<!-- =========================
+     CUSTOM COLOR
+========================= -->
+
+<div class="custom-color">
+
+<label for="customColor">
+Custom color:
+</label>
+
+<input
+    type="color"
+    id="customColor"
+    value="#ff595e"
+    oninput="setCustomColor(this.value)"
+>
+
+</div>
+
+
+<!-- =========================
+     BRUSH SIZE
+========================= -->
+
+<div class="size-control">
+
+<button onclick="changeSize(-2)">
+−
+</button>
+
+<input
+    type="range"
+    id="brushSize"
+    min="2"
+    max="60"
+    value="15"
+    oninput="updateSize(this.value)"
+>
+
+<button onclick="changeSize(2)">
++
+</button>
+
+<span id="sizeValue">
+15 px
+</span>
+
+</div>
+
+
+<!-- =========================
+     ZOOM
+========================= -->
+
+<div class="zoom-control">
+
+<button
+    class="zoom-btn"
+    onclick="changeZoom(-10)">
+−
+</button>
+
+<button
+    class="zoom-value"
+    onclick="resetZoom()"
+    id="zoomValue">
+100%
+</button>
+
+<button
+    class="zoom-btn"
+    onclick="changeZoom(10)">
++
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     CANVAS
+========================= -->
+
+<div class="canvas-scroll"
+     id="canvasScroll">
+
+<div
+    class="canvas-wrapper"
+    id="canvasWrapper">
+
+<canvas
+    id="baseCanvas"
+    width="794"
+    height="1123">
+</canvas>
+
+<canvas
+    id="paintCanvas"
+    width="794"
+    height="1123">
+</canvas>
+
+<canvas
+    id="lineCanvas"
+    width="794"
+    height="1123">
+</canvas>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     ACTIONS
+========================= -->
+
+<div class="actions">
+
+<button
+    class="action-btn"
+    onclick="clearColors()">
+🧹 Clear Colors
+</button>
+
+<button
+    class="action-btn"
+    onclick="saveImage()">
+💾 Save
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   CANVAS
+========================= */
+
+const baseCanvas =
+    document.getElementById("baseCanvas");
+
+const paintCanvas =
+    document.getElementById("paintCanvas");
+
+const lineCanvas =
+    document.getElementById("lineCanvas");
+
+
+const baseCtx =
+    baseCanvas.getContext("2d");
+
+const paintCtx =
+    paintCanvas.getContext("2d");
+
+const lineCtx =
+    lineCanvas.getContext("2d");
+
+
+const canvasWrapper =
+    document.getElementById("canvasWrapper");
+
+const canvasScroll =
+    document.getElementById("canvasScroll");
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentAnimal = "DOG.png";
+
+let currentColor = "#ff595e";
+
+let currentTool = "brush";
+
+let brushSize = 15;
+
+let drawing = false;
+
+let lastX = 0;
+
+let lastY = 0;
+
+let zoomLevel = 100;
+
+let animalPaintings = {};
+
+let history = [];
+
+let redoHistory = [];
+
+
+/* =========================
+   ZOOM
+========================= */
+
+function changeZoom(amount) {
+
+    zoomLevel += amount;
+
+    if (zoomLevel < 50) {
+        zoomLevel = 50;
+    }
+
+    if (zoomLevel > 200) {
+        zoomLevel = 200;
+    }
+
+    applyZoom();
+}
+
+
+function resetZoom() {
+
+    zoomLevel = 100;
+
+    applyZoom();
+}
+
+
+function applyZoom() {
+
+    document.getElementById(
+        "zoomValue"
+    ).textContent =
+        zoomLevel + "%";
+
+
+    const screenWidth =
+        window.innerWidth;
+
+
+    const baseWidth =
+        Math.min(
+            794,
+            screenWidth * 0.95
+        );
+
+
+    const newWidth =
+        baseWidth *
+        (zoomLevel / 100);
+
+
+    canvasWrapper.style.width =
+        newWidth + "px";
+
+
+    /*
+       Canvas böyüdüləndə və ya
+       ekran kiçildiləndə üfüqi
+       olaraq mərkəzə gətirilir.
+    */
+
+    requestAnimationFrame(
+        centerCanvas
+    );
+}
+
+
+/* =========================
+   CENTER CANVAS
+========================= */
+
+function centerCanvas() {
+
+    const maxScroll =
+        canvasScroll.scrollWidth -
+        canvasScroll.clientWidth;
+
+
+    if (maxScroll > 0) {
+
+        canvasScroll.scrollLeft =
+            maxScroll / 2;
+
+    }
+
+}
+
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        applyZoom();
+
+    }
+);
+
+
+/* =========================
+   CHANGE ANIMAL
+========================= */
+
+function changeAnimal(file, element) {
+
+    saveCurrentPainting();
+
+    currentAnimal = file;
+
+
+    document
+        .querySelectorAll(".animal-btn")
+        .forEach(function(btn) {
+
+            btn.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    if (element) {
+
+        element.classList.add(
+            "active"
+        );
+
+    }
+
+
+    const img = new Image();
+
+
+    img.onload = function() {
+
+        baseCtx.clearRect(
+            0,
+            0,
+            baseCanvas.width,
+            baseCanvas.height
+        );
+
+
+        baseCtx.drawImage(
+            img,
+            0,
+            0,
+            baseCanvas.width,
+            baseCanvas.height
+        );
+
+
+        paintCtx.clearRect(
+            0,
+            0,
+            paintCanvas.width,
+            paintCanvas.height
+        );
+
+
+        if (
+            animalPaintings[file]
+        ) {
+
+            paintCtx.putImageData(
+                animalPaintings[file],
+                0,
+                0
+            );
+
+        }
+
+
+        createLineLayer(img);
+
+
+        history = [];
+
+        redoHistory = [];
+
+        saveHistory();
+
+    };
+
+
+    img.src = file;
+}
+
+
+/* =========================
+   SAVE CURRENT PAINTING
+========================= */
+
+function saveCurrentPainting() {
+
+    if (!currentAnimal) {
+        return;
+    }
+
+
+    animalPaintings[currentAnimal] =
+        paintCtx.getImageData(
+            0,
+            0,
+            paintCanvas.width,
+            paintCanvas.height
+        );
+}
+
+
+/* =========================
+   CREATE LINE LAYER
+========================= */
+
+function createLineLayer(img) {
+
+    const tempCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    tempCanvas.width =
+        lineCanvas.width;
+
+    tempCanvas.height =
+        lineCanvas.height;
+
+
+    const tempCtx =
+        tempCanvas.getContext(
+            "2d"
+        );
+
+
+    tempCtx.clearRect(
+        0,
+        0,
+        tempCanvas.width,
+        tempCanvas.height
+    );
+
+
+    tempCtx.drawImage(
+        img,
+        0,
+        0,
+        tempCanvas.width,
+        tempCanvas.height
+    );
+
+
+    const imageData =
+        tempCtx.getImageData(
+            0,
+            0,
+            tempCanvas.width,
+            tempCanvas.height
+        );
+
+
+    const data =
+        imageData.data;
+
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        const r = data[i];
+
+        const g = data[i + 1];
+
+        const b = data[i + 2];
+
+        const a = data[i + 3];
+
+
+        const brightness =
+            (r + g + b) / 3;
+
+
+        if (
+            a > 30 &&
+            brightness < 130
+        ) {
+
+            data[i] = 0;
+            data[i + 1] = 0;
+            data[i + 2] = 0;
+            data[i + 3] = a;
+
+        }
+
+        else {
+
+            data[i + 3] = 0;
+
+        }
+
+    }
+
+
+    lineCtx.clearRect(
+        0,
+        0,
+        lineCanvas.width,
+        lineCanvas.height
+    );
+
+
+    lineCtx.putImageData(
+        imageData,
+        0,
+        0
+    );
+}
+
+
+/* =========================
+   SET TOOL
+========================= */
+
+function setTool(tool) {
+
+    currentTool = tool;
+
+
+    document
+        .querySelectorAll(".tool-btn")
+        .forEach(function(btn) {
+
+            btn.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(".tool-btn")
+        .forEach(function(btn) {
+
+            const text =
+                btn.textContent
+                    .toLowerCase();
+
+
+            if (
+                text.includes(tool)
+            ) {
+
+                btn.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+}
+
+
+/* =========================
+   SET COLOR
+========================= */
+
+function setColor(
+    color,
+    element
+) {
+
+    currentColor = color;
+
+
+    document.getElementById(
+        "customColor"
+    ).value = color;
+
+
+    document
+        .querySelectorAll(".color")
+        .forEach(function(item) {
+
+            item.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    if (element) {
+
+        element.classList.add(
+            "selected"
+        );
+
+    }
+}
+
+
+/* =========================
+   CUSTOM COLOR
+========================= */
+
+function setCustomColor(color) {
+
+    currentColor = color;
+
+
+    document
+        .querySelectorAll(".color")
+        .forEach(function(item) {
+
+            item.classList.remove(
+                "selected"
+            );
+
+        });
+}
+
+
+/* =========================
+   SIZE
+========================= */
+
+function updateSize(value) {
+
+    brushSize =
+        Number(value);
+
+
+    document.getElementById(
+        "sizeValue"
+    ).textContent =
+        brushSize + " px";
+}
+
+
+function changeSize(amount) {
+
+    brushSize += amount;
+
+
+    if (brushSize < 2) {
+        brushSize = 2;
+    }
+
+
+    if (brushSize > 60) {
+        brushSize = 60;
+    }
+
+
+    document.getElementById(
+        "brushSize"
+    ).value =
+        brushSize;
+
+
+    updateSize(
+        brushSize
+    );
+}
+
+
+/* =========================
+   GET POSITION
+========================= */
+
+function getPosition(event) {
+
+    const rect =
+        paintCanvas.getBoundingClientRect();
+
+
+    let clientX;
+    let clientY;
+
+
+    if (
+        event.touches &&
+        event.touches.length
+    ) {
+
+        clientX =
+            event.touches[0].clientX;
+
+        clientY =
+            event.touches[0].clientY;
+
+    }
+
+    else {
+
+        clientX =
+            event.clientX;
+
+        clientY =
+            event.clientY;
+
+    }
+
+
+    return {
+
+        x:
+            (clientX - rect.left) *
+            (
+                paintCanvas.width /
+                rect.width
+            ),
+
+        y:
+            (clientY - rect.top) *
+            (
+                paintCanvas.height /
+                rect.height
+            )
+
+    };
+}
+
+
+/* =========================
+   START DRAWING
+========================= */
+
+function startDrawing(event) {
+
+    event.preventDefault();
+
+
+    const pos =
+        getPosition(event);
+
+
+    /*
+       Canvas xaricində
+       kliklənibsə heç nə etmə.
+    */
+
+    if (
+        pos.x < 0 ||
+        pos.y < 0 ||
+        pos.x > paintCanvas.width ||
+        pos.y > paintCanvas.height
+    ) {
+
+        return;
+
+    }
+
+
+    lastX = pos.x;
+
+    lastY = pos.y;
+
+
+    /*
+       FILL
+    */
+
+    if (
+        currentTool === "fill"
+    ) {
+
+        floodFill(
+            Math.floor(pos.x),
+            Math.floor(pos.y)
+        );
+
+        saveHistory();
+
+        return;
+    }
+
+
+    drawing = true;
+
+
+    paintCtx.beginPath();
+
+
+    paintCtx.moveTo(
+        lastX,
+        lastY
+    );
+}
+
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(event) {
+
+    if (!drawing) {
+        return;
+    }
+
+
+    event.preventDefault();
+
+
+    const pos =
+        getPosition(event);
+
+
+    /*
+       Canvasdan çıxanda
+       rəsm dayanır, amma
+       drawing false edilmir.
+
+       Beləliklə geri qayıdanda
+       yenidən işləyə bilir.
+    */
+
+    if (
+        pos.x < 0 ||
+        pos.y < 0 ||
+        pos.x > paintCanvas.width ||
+        pos.y > paintCanvas.height
+    ) {
+
+        return;
+
+    }
+
+
+    paintCtx.lineWidth =
+        currentTool === "pencil"
+        ? brushSize / 2
+        : brushSize;
+
+
+    paintCtx.lineCap =
+        "round";
+
+    paintCtx.lineJoin =
+        "round";
+
+
+    if (
+        currentTool === "eraser"
+    ) {
+
+        paintCtx.globalCompositeOperation =
+            "destination-out";
+
+    }
+
+    else {
+
+        paintCtx.globalCompositeOperation =
+            "source-over";
+
+        paintCtx.strokeStyle =
+            currentColor;
+
+    }
+
+
+    paintCtx.lineTo(
+        pos.x,
+        pos.y
+    );
+
+
+    paintCtx.stroke();
+
+
+    lastX = pos.x;
+
+    lastY = pos.y;
+}
+
+
+/* =========================
+   STOP DRAWING
+========================= */
+
+function stopDrawing(event) {
+
+    if (!drawing) {
+        return;
+    }
+
+
+    if (event) {
+        event.preventDefault();
+    }
+
+
+    drawing = false;
+
+
+    paintCtx.globalCompositeOperation =
+        "source-over";
+
+
+    saveHistory();
+}
+
+
+/* =========================
+   MOUSE EVENTS
+========================= */
+
+paintCanvas.addEventListener(
+    "mousedown",
+    startDrawing
+);
+
+paintCanvas.addEventListener(
+    "mousemove",
+    draw
+);
+
+paintCanvas.addEventListener(
+    "mouseup",
+    stopDrawing
+);
+
+paintCanvas.addEventListener(
+    "mouseleave",
+    function() {
+        /*
+           Burada drawing = false
+           edilmir.
+        */
+    }
+);
+
+
+/*
+   Mouse buraxılanda canvasdan
+   kənarda olsa belə dayansın.
+*/
+
+window.addEventListener(
+    "mouseup",
+    stopDrawing
+);
+
+
+/* =========================
+   TOUCH EVENTS
+========================= */
+
+paintCanvas.addEventListener(
+    "touchstart",
+    startDrawing,
+    {
+        passive: false
+    }
+);
+
+paintCanvas.addEventListener(
+    "touchmove",
+    draw,
+    {
+        passive: false
+    }
+);
+
+paintCanvas.addEventListener(
+    "touchend",
+    stopDrawing,
+    {
+        passive: false
+    }
+);
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function saveHistory() {
+
+    history.push(
+        paintCtx.getImageData(
+            0,
+            0,
+            paintCanvas.width,
+            paintCanvas.height
+        )
+    );
+
+
+    if (
+        history.length > 30
+    ) {
+
+        history.shift();
+
+    }
+
+
+    redoHistory = [];
+}
+
+
+/* =========================
+   UNDO
+========================= */
+
+function undo() {
+
+    if (
+        history.length <= 1
+    ) {
+
+        return;
+
+    }
+
+
+    redoHistory.push(
+        history.pop()
+    );
+
+
+    const previous =
+        history[
+            history.length - 1
+        ];
+
+
+    paintCtx.putImageData(
+        previous,
+        0,
+        0
+    );
+}
+
+
+/* =========================
+   REDO
+========================= */
+
+function redo() {
+
+    if (
+        redoHistory.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const next =
+        redoHistory.pop();
+
+
+    history.push(
+        next
+    );
+
+
+    paintCtx.putImageData(
+        next,
+        0,
+        0
+    );
+}
+
+
+/* =========================
+   CLEAR COLORS
+========================= */
+
+function clearColors() {
+
+    /*
+       Bütün rəngləməni
+       bir dəfəyə təmizləyir.
+    */
+
+    paintCtx.clearRect(
+        0,
+        0,
+        paintCanvas.width,
+        paintCanvas.height
+    );
+
+
+    history = [];
+
+    redoHistory = [];
+
+
+    saveHistory();
+
+}
+
+
+/* =========================
+   FILL
+========================= */
+
+function floodFill(
+    startX,
+    startY
+) {
+
+    const width =
+        baseCanvas.width;
+
+    const height =
+        baseCanvas.height;
+
+
+    /*
+       Təhlükəsizlik:
+       canvas xaricində fill etmə.
+    */
+
+    if (
+        startX < 0 ||
+        startX >= width ||
+        startY < 0 ||
+        startY >= height
+    ) {
+
+        return;
+
+    }
+
+
+    const baseData =
+        baseCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+    const paintData =
+        paintCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+    const startIndex =
+        (
+            startY * width +
+            startX
+        ) * 4;
+
+
+    const startR =
+        baseData.data[startIndex];
+
+    const startG =
+        baseData.data[startIndex + 1];
+
+    const startB =
+        baseData.data[startIndex + 2];
+
+    const startA =
+        baseData.data[startIndex + 3];
+
+
+    if (
+        isLine(
+            startR,
+            startG,
+            startB,
+            startA
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const rgb =
+        hexToRgb(
+            currentColor
+        );
+
+
+    const queue = [
+        [startX, startY]
+    ];
+
+
+    let head = 0;
+
+
+    const visited =
+        new Uint8Array(
+            width * height
+        );
+
+
+    while (
+        head < queue.length
+    ) {
+
+        const point =
+            queue[head++];
+
+
+        const x =
+            point[0];
+
+        const y =
+            point[1];
+
+
+        if (
+            x < 0 ||
+            x >= width ||
+            y < 0 ||
+            y >= height
+        ) {
+
+            continue;
+
+        }
+
+
+        const pixel =
+            y * width + x;
+
+
+        if (
+            visited[pixel]
+        ) {
+
+            continue;
+
+        }
+
+
+        visited[pixel] = 1;
+
+
+        const index =
+            pixel * 4;
+
+
+        const r =
+            baseData.data[index];
+
+        const g =
+            baseData.data[index + 1];
+
+        const b =
+            baseData.data[index + 2];
+
+        const a =
+            baseData.data[index + 3];
+
+
+        if (
+            isLine(
+                r,
+                g,
+                b,
+                a
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        paintData.data[index] =
+            rgb.r;
+
+        paintData.data[index + 1] =
+            rgb.g;
+
+        paintData.data[index + 2] =
+            rgb.b;
+
+        paintData.data[index + 3] =
+            255;
+
+
+        queue.push([
+            x + 1,
+            y
+        ]);
+
+        queue.push([
+            x - 1,
+            y
+        ]);
+
+        queue.push([
+            x,
+            y + 1
+        ]);
+
+        queue.push([
+            x,
+            y - 1
+        ]);
+
+    }
+
+
+    paintCtx.putImageData(
+        paintData,
+        0,
+        0
+    );
+}
+
+
+/* =========================
+   DETECT LINE
+========================= */
+
+function isLine(
+    r,
+    g,
+    b,
+    a
+) {
+
+    if (a < 30) {
+        return false;
+    }
+
+
+    const brightness =
+        (r + g + b) / 3;
+
+
+    return brightness < 130;
+}
+
+
+/* =========================
+   HEX TO RGB
+========================= */
+
+function hexToRgb(hex) {
+
+    hex =
+        hex.replace(
+            "#",
+            ""
+        );
+
+
+    return {
+
+        r:
+            parseInt(
+                hex.substring(
+                    0,
+                    2
+                ),
+                16
+            ),
+
+        g:
+            parseInt(
+                hex.substring(
+                    2,
+                    4
+                ),
+                16
+            ),
+
+        b:
+            parseInt(
+                hex.substring(
+                    4,
+                    6
+                ),
+                16
+            )
+
+    };
+}
+
+
+/* =========================
+   SAVE IMAGE
+========================= */
+
+function saveImage() {
+
+    const output =
+        document.createElement(
+            "canvas"
+        );
+
+
+    output.width =
+        baseCanvas.width;
+
+    output.height =
+        baseCanvas.height;
+
+
+    const ctx =
+        output.getContext(
+            "2d"
+        );
+
+
+    ctx.drawImage(
+        baseCanvas,
+        0,
+        0
+    );
+
+
+    ctx.drawImage(
+        paintCanvas,
+        0,
+        0
+    );
+
+
+    ctx.drawImage(
+        lineCanvas,
+        0,
+        0
+    );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.download =
+        currentAnimal.replace(
+            ".png",
+            ""
+        ) +
+        "-colored.png";
+
+
+    link.href =
+        output.toDataURL(
+            "image/png"
+        );
+
+
+    link.click();
+}
+
+
+/* =========================
+   START
+========================= */
+
+changeAnimal(
+    "DOG.png",
+    document.querySelector(
+        ".animal-btn"
+    )
+);
+
+
+applyZoom();
+
+</script>
+
+</body>
+</html>
